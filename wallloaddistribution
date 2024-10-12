@@ -1,17 +1,15 @@
-
-'< !--for the svg and therefore code to work the svg_drawing.cpd file should be located in the same directory as this file-- > 
-'< !--base formulas for the  calculations are derived from document below regarding masonry walls-- >
-'< !--https://www.wienerberger.be/content/dam/wienerberger/belgium/marketing/documents-magazines/technical/presentations/Deel%203%20Structurele%20Analyse.pdf-- >
-
+'<!--for the svg and therefore code to work the svg_drawing.cpd file should be located in the same directory as this file-- > 
+'<!--base formulas for the  calculations are derived from document below regarding masonry walls-- >
+'<!--https://www.wienerberger.be/content/dam/wienerberger/belgium/marketing/documents-magazines/technical/presentations/Deel%203%20Structurele%20Analyse.pdf-- >
 #include svg_drawing.cpd
 #hide
 h = 20000mm
 #show
-'< !--building outline polygon, can be as long as you which, as long as both x and y locations of points are given-- > 
+'<!--building outline polygon, can be as long as you which, as long as both x and y locations of points are given-- > 
 '<strong>''building outline polygon</strong>
 xl = [0; 13000; 13000; 0]*mm
 yl = [0; 0; 8500; 8500]*mm
-'< !--dimension as lx and Ly and location on x and y axis,can be any amount you want as long as lx,ly,x,and Y have an equal amount of inputs -- > 
+'<!--dimension as lx and Ly and location on x and y axis,can be any amount you want as long as lx,ly,x,and Y have an equal amount of inputs -->'
 '<hr />
 '<strong>''wall dimensions lx,ly and location x and y</strong>
 lx = [5400; 5400; 200; 200; 250; 250]*mm
@@ -19,13 +17,13 @@ ly = [200; 200; 4400; 4400; 3000; 3000]*mm
 x = [2700; 2700; 6700; 12000; 7200; 12000]*mm
 y = [8000; 4200; 6300; 6300; 1500; 1500]*mm
 '<hr />
-'< !--forces in X and Y direction, be aware that distance efy or efx of 0 will result in an error( for dwaring the arrow)-- > 
+'<!--forces in X and Y direction, be aware that distance efy or efx of 0 will result in an error( for dwaring the arrow)--> 
 '<strong>''Force in X direction at location efy</strong>
 px = 0kN','efy = 2400mm
 '<strong>''Force in y direction at location efx</strong>
 py = 100kN','efx = 3800mm
 '<hr />
-'< !--ss= scale for the text in the svg drawing, so adapt if needed for smaller . -- > 
+'<!--ss= scale for the text in the svg drawing, so adapt if needed for smaller . --> 
 ss = 20
 E_m = 6000N/mm^2
 N = len(lx)
@@ -135,3 +133,4 @@ i2 = if(i1 ≡ nnn; 1; i1 + 1)
 '<line x1="'xl.i1/ss'" Y1="'yl.i1/ss'" x2="'xl.i2/ss'" y2="'yl.i2/ss'"style="stroke:black; stroke-width:1; fill:black; fill-opacity:0.9; stroke-opacity:0.9" />
 #loop
 '</svg>
+

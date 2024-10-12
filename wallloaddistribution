@@ -1,0 +1,137 @@
+
+'< !--for the svg and therefore code to work the svg_drawing.cpd file should be located in the same directory as this file-- > 
+'< !--base formulas for the  calculations are derived from document below regarding masonry walls-- >
+'< !--https://www.wienerberger.be/content/dam/wienerberger/belgium/marketing/documents-magazines/technical/presentations/Deel%203%20Structurele%20Analyse.pdf-- >
+
+#include svg_drawing.cpd
+#hide
+h = 20000mm
+#show
+'< !--building outline polygon, can be as long as you which, as long as both x and y locations of points are given-- > 
+'<strong>''building outline polygon</strong>
+xl = [0; 13000; 13000; 0]*mm
+yl = [0; 0; 8500; 8500]*mm
+'< !--dimension as lx and Ly and location on x and y axis,can be any amount you want as long as lx,ly,x,and Y have an equal amount of inputs -- > 
+'<hr />
+'<strong>''wall dimensions lx,ly and location x and y</strong>
+lx = [5400; 5400; 200; 200; 250; 250]*mm
+ly = [200; 200; 4400; 4400; 3000; 3000]*mm
+x = [2700; 2700; 6700; 12000; 7200; 12000]*mm
+y = [8000; 4200; 6300; 6300; 1500; 1500]*mm
+'<hr />
+'< !--forces in X and Y direction, be aware that distance efy or efx of 0 will result in an error( for dwaring the arrow)-- > 
+'<strong>''Force in X direction at location efy</strong>
+px = 0kN','efy = 2400mm
+'<strong>''Force in y direction at location efx</strong>
+py = 100kN','efx = 3800mm
+'<hr />
+'< !--ss= scale for the text in the svg drawing, so adapt if needed for smaller . -- > 
+ss = 20
+E_m = 6000N/mm^2
+N = len(lx)
+nnn = len(xl)
+yymax = 1/2*ly + y
+xxmax = 1/2*lx + x
+widht = max(xxmax; xl)
+height = max(yymax; yl)
+bb = lookup_eq(y; ly; max(y))
+cc = lookup_eq(x; lx; max(x))
+'<hr />
+kx = ly*E_m/((h/lx)*(4*(h/lx)^2 + 3))
+xsum = sum(kx)
+xr = (y*kx)
+kxiyi = sum(xr)
+Yr = sum(xr)/sum(kx)
+'<hr />
+ky = lx*E_m/((h/ly)*(4*(h/ly)^2 + 3))
+ysum = sum(ky)
+n = len(lx)
+yr = (x*ky)
+kyiyi = sum(yr)
+h = fill(vector(n); h)
+nr = range(1; n; 1)
+Xr = sum(yr)/sum(ky)
+'<hr />
+xri = x - Xr
+yri = y - Yr
+I_r = sum(kx*yri^2 + ky*xri^2)
+ex = efx - Xr
+ey = efy - Yr
+#round 0
+fxx = (kx/xsum)*px + ((kx*(y - Yr)/I_r)*(px*ey - py*ex))
+fyy = (ky/ysum)*py + ((ky*(x - Xr)/I_r)*(px*ey - py*ex))
+tabel = join_cols(nr; lx; ly; h; kx; ky; x; y; xr; yr)
+tabel2 = join_cols(nr; x; y; yri; xri; kx*yri^2; ky*xri^2; fxx; fyy)
+i = n_cols(tabel)
+j = n_rows(tabel)
+ii = n_cols(tabel2)
+jj = n_rows(tabel2)
+rvtab = rsort_rows(tabel; 1)
+rvtab2 = rsort_rows(tabel2; 1)
+#post
+#val
+'<table class="bordered">
+'<tr><th>Nr</th><th>lx</th><th>ly</th><th>h</th><th>kxi</th><th>kyi</th><th>xi</th><th>yi</th><th>kxi*yi</th><th>kyi*xi</th></tr>
+#while j > 0
+'<!--'I = 0'--><tr>
+#while I < i
+'<!--'I = I + 1'--><td>'rvtab.(j; I)'</td>
+#loop
+'</tr><!--'j = j - 1'-->
+#loop
+'<td> sum </td > <td>  </td > <td>  </td > <td>  </td > <td> 'xsum'</td > <td> 'ysum' </td > <td> </td > <td>  </td > <td> 'kxiyi' </td > <td> 'kyiyi'</td > 
+'</table>
+'<table class="bordered">
+'<tr><th>Nr1</th><th>x</th><th>y</th><th>xr</th><th>yr</th><th>kx*yr<sup>2</sup></th><th>ky*xr<sup>2</sup></th><th>Fx</th><th>Fy</th></tr>
+#while jj > 0
+'<!--'II = 0'--><tr>
+#while II < ii
+'<!--'II = II + 1'--><td>'rvtab2.(jj; II)'</td>
+#loop
+'</tr><!--'jj = jj - 1'--> 
+#loop
+'<td> sum </td >  <td>  </td > <td>  </td > <td> </td > <td> </td > <td> <strong>'sum(kx*yri^2)'</strong></td ><td> <strong>'sum(ky*xri^2)'  </strong>  </td > <td><strong>'sum(fxx)'</strong></td > <td> <strong>'sum(fyy)'</strong></td > 
+'</table>
+#def hide$(s$) = <!--'s$'-->
+#val
+#hide
+w = widht/ss
+h = height/ss
+Xr = Xr*1000
+Yr = Yr*1000
+uuy = max(yymax)/ss
+x.(3)/ss + 1/2*lx.(3)/ss
+lx.(3)/ss
+uuu = (x.(4))/ss
+rrr = max(yymax)/ss - 500mm/ss
+#hide
+ttt = (efy/ss)/mm
+qqq = (efx/ss)/mm
+#show
+'<svg viewbox="'0' '0' 'w' 'h'" xmlns="http://www.w3.org/2000/svg" version="1.1" style="font-size:5pt; width:1200px; height:1200px">
+ '< !--drawing walls-- > 
+#for i = 1 : N
+    '<rect x="'(x.(i) - (1/2*lx.(i)))/ss'" y="'(y.(i) - (1/2*ly.(i)))/ss'" width="'lx.(i)/ss'" height="'ly.(i)/ss'" style="stroke:black; stroke-width:1; fill:black; fill-opacity:0.2; stroke-opacity:0.8" />'
+textv$((15mm+(x.(i)/ss)); ((-40mm + (y.(i)/ss))); Fy= '(fyy.i)'kN)
+texth$(((x.(i)/ss));(15mm+(y.(i)/ss));('(i)')Fx='(fxx.i)'kN)
+#loop
+ '< !--centreline walls-- > 
+line$((Xr)/ss; 0; (Xr)/ss; max(yymax)/ss; axis_style$)
+line$((0); (Yr/ss); (widht/ss); (Yr/ss); axis_style$)
+ '< !--arrow  forces-- > 
+#if px > 0kN
+arrowh$(0;ttt;30;ttt;red_style$)
+texth$(40;ttt;'px')
+#end if
+#if py > 0kN
+arrowv$(qqq;0;qqq;30;red_style$)
+texth$(qqq;40;'py')
+#end if
+ '< !--drawing shape outline-- > 
+#for i1 = 1 : nnn
+#hide
+i2 = if(i1 ≡ nnn; 1; i1 + 1)
+#show
+'<line x1="'xl.i1/ss'" Y1="'yl.i1/ss'" x2="'xl.i2/ss'" y2="'yl.i2/ss'"style="stroke:black; stroke-width:1; fill:black; fill-opacity:0.9; stroke-opacity:0.9" />
+#loop
+'</svg>
